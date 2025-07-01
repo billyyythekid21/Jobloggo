@@ -6,7 +6,7 @@ FILENAME = "internships.csv"
 KEYS = ["ID", "Company", "Role", "Status", "Submission Date", "Deadline", "Notes"]
 
 def display_menu():
-    print("\n--- Jogbloggo - Internship Tracker ---")
+    print("\n--- Jogbloggo - Internship Application Tracker ---")
     print("[1] Add Internship")
     print("[2] View All Internships")
     print("[3] Filter by Status")
