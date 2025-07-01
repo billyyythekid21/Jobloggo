@@ -40,7 +40,14 @@ def add_internship(internships: list, next_id: int):
     }
     internships.append(internship)
     print(f"Internship ID: {next_id} has been added.")
+    write_to_csv(internships)
     return next_id + 1
+
+def write_to_csv(internships: list):
+    with open(FILENAME, mode='w', newline='') as file:
+        writer = csv.DictWriter(file, fieldnames=["id", "company", "role", "status", "applied_date", "deadline", "notes"])
+        writer.writeheader()
+        writer.writerows(internships)
 
 def filter_by_status(internships: list):
     status = input("Enter status to filter (Applied, OA, Interview, Offer, Rejected): ")
@@ -53,20 +60,44 @@ def filter_by_status(internships: list):
 
 def delete_internship(internships: list):
     try:
-        del_id = int(input("Enter ID to delete: "))
+        del_id = int(input("Enter ID to delete (Type 0 to clear all): "))
     except ValueError:
         print("Invalid ID.")
+        return
+
+    if del_id == 0:
+        confirm = input("Are you sure you want to delete all internships? (Y/N): ").strip().lower()
+        if confirm == 'y':
+            internships.clear()
+            write_to_csv(internships)
+            print("All internships deleted.")
+        else:
+            print("Clearing cancelled.")
         return
 
     for i in internships:
         if i['id'] == del_id:
             internships.remove(i)
+            write_to_csv(internships)
             print("Internship deleted.")
             return
+
     print(f"No internship found with ID: {del_id}.")
 
-def main():
+def load_from_csv() -> list:
     internships = []
+    try:
+        with open(FILENAME, mode='r', newline='') as file:
+            reader = csv.DictReader(file)
+            for row in reader:
+                row["id"] = int(row["id"])
+                internships.append(row)
+    except FileNotFoundError:
+        pass
+    return internships
+
+def main():
+    internships = load_from_csv()
     next_id = 1
 
     while True:
