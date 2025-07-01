@@ -1,6 +1,6 @@
 import csv
 import sys
-from datetime import datetime
+from datetime import datetime, date
 
 FILENAME = "internships.csv"
 KEYS = ["ID", "Company", "Role", "Status", "Submission Date", "Deadline", "Notes"]
@@ -19,14 +19,24 @@ def display_all(internships: list):
         return
     print("\nCurrent Internships:")
     for internship in internships:
-        print(f"[{internship['id']}] {internship['company']} - {internship['role']} ({internship['status']})")
+        print(f"[{internship['id']}] {internship['company']} - {internship['role']}")
+        print(f"    Status: {internship['status']}")
+        print(f"    Applied Date: {internship['applied_date']}")
+        print(f"    Deadline: {internship['deadline']}")
+        print(f"    Notes: {internship['notes']}\n")
 
 def add_internship(internships: list, next_id: int):
     company = input("Company: ")
     role = input("Role: ")
     status = input("Status (Applied/OA/Interview/Offer/Rejected): ")
-    applied_date = input("Applied Date (DD-MM-YYYY): ")
-    deadline = input("Deadline (DD-MM-YYYY): ")
+    applied_date_str = input("Applied Date (DD-MM-YYYY): ")
+    deadline_str = input("Deadline (DD-MM-YYYY): ")
+    try:
+        applied_date = datetime.strptime(applied_date_str, "%d-%m-%Y").date()
+        deadline = datetime.strptime(deadline_str, "%d-%m-%Y").date()
+    except ValueError:
+        print("Invalid date format. Please use DD-MM-YYYY.")
+        return next_id
     notes = input("Notes: ")
 
     internship = {
@@ -34,8 +44,8 @@ def add_internship(internships: list, next_id: int):
         "company": company,
         "role": role,
         "status": status,
-        "applied_date": applied_date,
-        "deadline": deadline,
+        "applied_date": applied_date.isoformat(),
+        "deadline": deadline.isoformat(),
         "notes": notes
     }
     internships.append(internship)
@@ -91,6 +101,8 @@ def load_from_csv() -> list:
             reader = csv.DictReader(file)
             for row in reader:
                 row["id"] = int(row["id"])
+                row["applied_date"] = datetime.strptime(row["applied_date"], "%Y-%m-%d").date()
+                row["deadline"] = datetime.strptime(row["deadline"], "%Y-%m-%d").date()
                 internships.append(row)
     except FileNotFoundError:
         pass
