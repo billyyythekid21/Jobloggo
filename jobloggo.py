@@ -17,13 +17,13 @@ def display_all(internships: list):
     if not internships:
         print("No internships in the system.")
         return
-    print("\nCurrent Internships:")
+    print("\nCurrent Internships:\n")
     for internship in internships:
         print(f"[{internship['id']}] {internship['company']} - {internship['role']}")
-        print(f"    Status: {internship['status']}")
-        print(f"    Applied Date: {internship['applied_date']}")
-        print(f"    Deadline: {internship['deadline']}")
-        print(f"    Notes: {internship['notes']}\n")
+        print(f"\nStatus: {internship['status']}")
+        print(f"\nApplied Date: {internship['applied_date']}")
+        print(f"\nDeadline: {internship['deadline']}")
+        print(f"\nNotes: {internship['notes']}\n\n")
 
 def add_internship(internships: list, next_id: int):
     company = input("Company: ")
